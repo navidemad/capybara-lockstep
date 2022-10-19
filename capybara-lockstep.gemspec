@@ -29,9 +29,10 @@ Gem::Specification.new do |spec|
 
   # Uncomment to register a new dependency of your gem
   spec.add_dependency "capybara", ">= 2.0"
-  spec.add_dependency "selenium-webdriver", ">= 3"
   spec.add_dependency "activesupport", ">= 3.2"
   spec.add_dependency "ruby2_keywords"
+  spec.add_dependency "selenium-webdriver", ">= 3"
+  spec.add_dependency "cuprite", ">= 0.14.2"
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html

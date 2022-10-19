@@ -80,7 +80,7 @@ module Capybara
       private
 
       def javascript_driver?
-        driver.is_a?(Capybara::Selenium::Driver)
+        driver.is_a?(Capybara::Cuprite::Driver) || driver.is_a?(Capybara::Selenium::Driver)
       end
 
       def send_config_to_browser(js)

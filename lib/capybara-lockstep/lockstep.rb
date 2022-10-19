@@ -110,7 +110,7 @@ module Capybara
               self.synchronized = true
             end
           end
-        rescue ::Selenium::WebDriver::Error::ScriptTimeoutError
+        rescue ::Selenium::WebDriver::Error::ScriptTimeoutError, ::Ferrum::ScriptTimeoutError
           timeout_message = "Could not synchronize within #{timeout} seconds"
           log timeout_message
           if timeout_with == :error
@@ -123,7 +123,7 @@ module Capybara
           log ERROR_ALERT_OPEN
           # Don't raise an error, this will happen in an innocent test.
           # We will retry on the next Capybara synchronize call.
-        rescue ::Selenium::WebDriver::Error::JavascriptError => e
+        rescue ::Selenium::WebDriver::Error::JavascriptError, ::Ferrum::JavaScriptError => e
           # When the URL changes while a script is running, my current selenium-webdriver
           # raises a Selenium::WebDriver::Error::JavascriptError with the message:
           # "javascript error: document unloaded while waiting for result".
@@ -176,4 +176,3 @@ module Capybara
 
   end
 end
-

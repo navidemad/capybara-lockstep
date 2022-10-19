@@ -151,13 +151,14 @@ Capybara::Session.class_eval do
 end
 
 # Capybara 3 has driver-specific Node classes which sometimes
-# super to Capybara::Selenium::Node, but not always.
+# super to Capybara::Selenium::Node, or Capybara::Driver::Node but not always.
 node_classes = [
   (Capybara::Selenium::ChromeNode  if defined?(Capybara::Selenium::ChromeNode)),
   (Capybara::Selenium::FirefoxNode if defined?(Capybara::Selenium::FirefoxNode)),
   (Capybara::Selenium::SafariNode  if defined?(Capybara::Selenium::SafariNode)),
   (Capybara::Selenium::EdgeNode    if defined?(Capybara::Selenium::EdgeNode)),
   (Capybara::Selenium::IENode      if defined?(Capybara::Selenium::IENode)),
+  (Capybara::Cuprite::Node         if defined?(Capybara::Cuprite::Node)),
 ].compact
 
 if node_classes.empty?

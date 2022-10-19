@@ -5,9 +5,7 @@ This Ruby gem synchronizes [Capybara](https://github.com/teamcapybara/capybara) 
 The next section explain why your test suite is flaky and how capybara-lockstep can help.\
 If you don't care you may skip to [installation instructions](#installation).
 
-
-Why are tests flaky?
---------------------
+## Why are tests flaky?
 
 A naively written E2E test will have [race conditions](https://makandracards.com/makandra/47336-fixing-flaky-integration-tests) between the test script and the controlled browser. How often these timing issues will fail your test depends on luck and your machine's performance. You may not see these issues for years until a colleague runs your suite on their new laptop.
 
@@ -26,7 +24,7 @@ end
 
 This test has four timing issues that may cause it to fail:
 
-1. We click on the *New tweet* button, but the the JS event handler to open the tweet form wasn't registered yet.
+1. We click on the _New tweet_ button, but the the JS event handler to open the tweet form wasn't registered yet.
 2. We start filling in the form, but it wasn't loaded yet.
 3. After sending the tweet we immediately navigate away, killing the form submission request that is still in flight. Hence the tweet will never appear in the next step.
 4. We look for the new tweet, but the timeline wasn't loaded yet.
@@ -36,7 +34,6 @@ However, only issues **2** and **4** can be healed by retrying.
 
 While it is [possible](https://makandracards.com/makandra/47336-fixing-flaky-integration-tests) to remove most of the timing issues above, it requires skill and discipline.\
 capybara-lockstep fixes issues **1**, **2**, **3** and **4** without any changes to the test code.
-
 
 ### This is a JavaScript problem
 
@@ -51,10 +48,7 @@ When all you have is standard HTML links and forms, stock Capybara will not see 
 However, when JavaScript handles a link click, you get **zero guarantees**.\
 Capybara/WebDriver **will not wait** for AJAX requests or any other async work.
 
-
-
-How capybara-lockstep helps
----------------------------
+## How capybara-lockstep helps
 
 capybara-lockstep waits until the browser is idle before moving on to the next Capybara command. This greatly relieves the pressure on [Capybara's retry logic](https://github.com/teamcapybara/capybara#asynchronous-javascript-ajax-and-friends).
 
@@ -77,19 +71,16 @@ This covers most async work that causes flaky tests.
 
 You can also configure capybara-lockstep to [wait for other async work](#signaling-asynchronous-work) that does not involve the network, like animations.
 
-
-Installation
-------------
+## Installation
 
 ### Prerequisites
 
 Check if your application satisfies all requirements for capybara-lockstep:
 
 - Capybara 2 or higher.
-- Your Capybara driver must use [selenium-webdriver](https://rubygems.org/gems/selenium-webdriver/). capybara-lockstep deactivates itself for any other driver.
-- This gem was only tested with a Selenium-controlled Chrome browser. [Chrome in headless mode](https://makandracards.com/makandra/492109-running-capybara-tests-in-headless-chrome) is recommended, but not required.
+- Your Capybara driver must use at least [selenium-webdriver](https://rubygems.org/gems/selenium-webdriver/) or [cuprite](https://rubygems.org/gems/cuprite/). capybara-lockstep deactivates itself for any other driver.
+- This gem was only tested with a Selenium/Cuprite-controlled Chrome browser. [Chrome in headless mode](https://makandracards.com/makandra/492109-running-capybara-tests-in-headless-chrome) is recommended, but not required.
 - This gem was only tested with Rails, but there's no Rails dependency.
-
 
 ### Installing the Ruby gem
 
@@ -109,7 +100,6 @@ $ bundle install
 
 If you're not using Rails you should also `require 'capybara-lockstep'` in your `spec_helper.rb` (RSpec), `test_helper.rb` (Minitest) or `env.rb` (Cucumber).
 
-
 ### Including the JavaScript snippet
 
 capybara-lockstep requires a JavaScript snippet to be embedded by the application under test. If that snippet is missing on a screen, capybara-lockstep will not be able to synchronize with the browser. In that case the test will continue without synchronization.
@@ -125,8 +115,6 @@ Ideally the snippet should be included in the `<head>` before any other `<script
 **If you're not using Rails** you can `include Capybara::Lockstep::Helper` and access the JavaScript with `capybara_lockstep_script`.
 
 **If you have a strict [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)** the `capybara_lockstep` Rails helper will insert a CSP nonce by default. You can also pass an explicit nonce string using the `:nonce` option.
-
-
 
 ### Verify successful integration
 
@@ -148,8 +136,6 @@ You should see messages like this in your console:
 
 Note that you may see some failures from tests with wrong assertions, which previously passed due to lucky timing.
 
-
-
 ## Signaling asynchronous work
 
 By default capybara-lockstep waits until resources have loaded, AJAX requests have finished and their callbacks have been called.
@@ -158,10 +144,10 @@ You can configure capybara-lockstep to wait for other async work that does not i
 
 ```js
 async function fadeIn(element) {
-  CapybaraLockstep.startWork('Animation')
-  startAnimation(element, 'fade-in')
-  await waitForAnimationEnd(element)
-  CapybaraLockstep.stopWork('Animation')
+  CapybaraLockstep.startWork("Animation");
+  startAnimation(element, "fade-in");
+  await waitForAnimationEnd(element);
+  CapybaraLockstep.stopWork("Animation");
 }
 ```
 
@@ -173,7 +159,6 @@ The string argument is used for logging (when logging is enabled). It does **not
 ```
 
 You may omit the string argument, in which case nothing will be logged, but the work will still be tracked.
-
 
 ## Note on interacting with the JavaScript API
 
@@ -188,9 +173,8 @@ if (window.CapybaraLockstep) {
 If you can use ES6 you may also use [optional chaining](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining) to only call a function if `window.CapybaraLockstep` is defined:
 
 ```js
-window.CapybaraLockstep?.startWork('Work')
+window.CapybaraLockstep?.startWork("Work");
 ```
-
 
 ## Performance impact
 
@@ -199,7 +183,6 @@ capybara-lockstep may or may not impact the runtime of your test suite. It depen
 While waiting for the browser to be idle does take a few milliseconds, Capybara no longer needs to retry failed commands. You will also save time from not needing to re-run failed tests.
 
 In casual testing with large test suites I experienced a performance impact between +/- 10%.
-
 
 ## Debugging log
 
@@ -225,7 +208,6 @@ You should also see messages like this in your browser's JavaScript console:
 [capybara-lockstep] Started work: fetch /path [3 jobs]
 [capybara-lockstep] Finished work: fetch /path [2 jobs]
 ```
-
 
 ### Using a logger
 
@@ -274,7 +256,6 @@ Capybara::Lockstep.timeout = nil
 Capybara::Lockstep.timeout_with = nil
 ```
 
-
 ## Manual synchronization
 
 capybara-lockstep will automatically patch Capybara to wait for the browser after every command. **This should be enough for most test suites**.
@@ -288,9 +269,8 @@ Capybara::Lockstep.synchronize
 You may also synchronize from your client-side JavaScript. The following will run the given callback once the browser is idle:
 
 ```js
-CapybaraLockstep.synchronize(callback)
+CapybaraLockstep.synchronize(callback);
 ```
-
 
 ## Disabling synchronization
 
@@ -316,8 +296,6 @@ Capybara::Lockstep.mode = :off
 Capybara::Lockstep.synchronize # will not synchronize
 ```
 
-
-
 ## Handling legacy promises
 
 Legacy promise implementations (like jQuery's `$.Deferred` and AngularJS' `$q`) work using [tasks instead of microtasks](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/). Their AJAX implementations (like `$.ajax()` and `$http`) use task-based promises to signal that a request is done.
@@ -325,9 +303,9 @@ Legacy promise implementations (like jQuery's `$.Deferred` and AngularJS' `$q`) 
 This means there is a time window in which all AJAX requests have finished, but their callbacks have not yet run:
 
 ```js
-$http.get('/foo').then(function() {
+$http.get("/foo").then(function () {
   // This callback runs one task after the response was received
-})
+});
 ```
 
 It is theoretically possible that your test will observe the browser in that window, and expect content that has not been rendered yet. Affected code must call `then()` on a task-based promise **or** use `setTimeout()` to push work into the next task.
@@ -343,7 +321,6 @@ If you see longer chains of `then()` or nested `setTimeout()` calls in your code
 Waiting additional tasks will have a negative performance impact on your test suite.
 
 > **Note:** When capybara-lockstep detects jQuery on the page, it will automatically patch [`$.ajax()`](https://api.jquery.com/jQuery.ajax/) to wait an additional task after the response was received. If your only concern is callbacks to `$.ajax()` you do not need so set `Capybara::Lockstep.wait_tasks`.
-
 
 ## Contributing
 
@@ -368,14 +345,12 @@ As an alternative you may also install this gem onto your local machine by runni
 ### Releasing a new version
 
 - Update the version number in `version.rb`
- - Run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
- - If RubyGems publishing seems to freeze, try entering your OTP code.
-
+- Run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+- If RubyGems publishing seems to freeze, try entering your OTP code.
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
 
 ## Credits
 
