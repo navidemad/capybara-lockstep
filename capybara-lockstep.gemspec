@@ -31,7 +31,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "capybara", ">= 2.0"
   spec.add_dependency "activesupport", ">= 3.2"
   spec.add_dependency "ruby2_keywords"
-  spec.add_dependency "selenium-webdriver", ">= 3"
   spec.add_dependency "cuprite", ">= 0.14.2"
 
   # For more information and examples about making a new gem, checkout our

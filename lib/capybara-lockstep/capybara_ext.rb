@@ -150,41 +150,22 @@ Capybara::Session.class_eval do
   # internally and we don't want to synchronize multiple times.
 end
 
-# Capybara 3 has driver-specific Node classes which sometimes
-# super to Capybara::Selenium::Node, or Capybara::Driver::Node but not always.
-node_classes = [
-  (Capybara::Selenium::ChromeNode  if defined?(Capybara::Selenium::ChromeNode)),
-  (Capybara::Selenium::FirefoxNode if defined?(Capybara::Selenium::FirefoxNode)),
-  (Capybara::Selenium::SafariNode  if defined?(Capybara::Selenium::SafariNode)),
-  (Capybara::Selenium::EdgeNode    if defined?(Capybara::Selenium::EdgeNode)),
-  (Capybara::Selenium::IENode      if defined?(Capybara::Selenium::IENode)),
-  (Capybara::Cuprite::Node         if defined?(Capybara::Cuprite::Node)),
-].compact
+Capybara::Cuprite::Node.class_eval do
+  extend Capybara::Lockstep::UnsychronizeAfter
 
-if node_classes.empty?
-  # Capybara 2 has no driver-specific Node implementations,
-  # so we patch the shared base class.
-  node_classes = [Capybara::Selenium::Node]
-end
-
-node_classes.each do |node_class|
-  node_class.class_eval do
-    extend Capybara::Lockstep::UnsychronizeAfter
-
-    unsychronize_after :set
-    unsychronize_after :select_option
-    unsychronize_after :unselect_option
-    unsychronize_after :click
-    unsychronize_after :right_click
-    unsychronize_after :double_click
-    unsychronize_after :send_keys
-    unsychronize_after :hover
-    unsychronize_after :drag_to
-    unsychronize_after :drop
-    unsychronize_after :scroll_by
-    unsychronize_after :scroll_to
-    unsychronize_after :trigger
-  end
+  unsychronize_after :set
+  unsychronize_after :select_option
+  unsychronize_after :unselect_option
+  unsychronize_after :click
+  unsychronize_after :right_click
+  unsychronize_after :double_click
+  unsychronize_after :send_keys
+  unsychronize_after :hover
+  unsychronize_after :drag_to
+  unsychronize_after :drop
+  unsychronize_after :scroll_by
+  unsychronize_after :scroll_to
+  unsychronize_after :trigger
 end
 
 module Capybara

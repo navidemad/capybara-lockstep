@@ -38,18 +38,9 @@ describe Capybara::Lockstep do
       expect(subject).to be_synchronized
     end
 
-    it 'logs but does not fail when JavaScript communication fails due to an open alert' do
-      stub_page
-      error = Selenium::WebDriver::Error::UnexpectedAlertOpenError.new
-      expect(@page).to receive(:evaluate_async_script).and_raise(error)
-      expect(subject).to receive(:log).with(match /alert/i)
-      expect { subject.synchronize }.to_not raise_error
-      expect(subject).not_to be_synchronized
-    end
-
     it 'logs but does not fail when the browser navigates to a new page while synchronizing' do
       stub_page
-      error = Selenium::WebDriver::Error::JavascriptError.new('javascript error: document unloaded while waiting for result')
+      error = Ferrum::JavascriptError.new('javascript error: document unloaded while waiting for result')
       expect(@page).to receive(:evaluate_async_script).and_raise(error)
       expect(subject).to receive(:log).with(match /navigated away/i)
       expect { subject.synchronize }.to_not raise_error
@@ -58,7 +49,7 @@ describe Capybara::Lockstep do
 
     it 'logs but does not fail when synchronization times out (we will retry on the next Capybara synchronize)' do
       stub_page
-      error = Selenium::WebDriver::Error::ScriptTimeoutError.new
+      error = Ferrum::ScriptTimeoutError.new
       expect(@page).to receive(:evaluate_async_script).and_raise(error)
       expect(subject).to receive(:log).with(match /could not synchronize within/i)
       expect { subject.synchronize }.to_not raise_error
@@ -97,7 +88,7 @@ describe Capybara::Lockstep do
 
     it "logs but does not fail if the synchronization does not complete within the configured timeout" do
       stub_page
-      expect(@page).to receive(:evaluate_async_script).and_raise(Selenium::WebDriver::Error::ScriptTimeoutError)
+      expect(@page).to receive(:evaluate_async_script).and_raise(Ferrum::ScriptTimeoutError)
       expect(subject).to receive(:log).with(match /could not synchronize within [\d\.]+ seconds?/i)
       expect { subject.synchronize }.to_not raise_error
       expect(subject).not_to be_synchronized
@@ -106,7 +97,7 @@ describe Capybara::Lockstep do
     it "raises an Caybara::Lockstep::Timeout if synchronization times out and .timeout_with = :error is also set" do
       stub_page
       subject.timeout_with = :error
-      expect(@page).to receive(:evaluate_async_script).and_raise(Selenium::WebDriver::Error::ScriptTimeoutError)
+      expect(@page).to receive(:evaluate_async_script).and_raise(Ferrum::ScriptTimeoutError)
       expect(subject).to receive(:log).with(match /could not synchronize within [\d\.]+ seconds?/i)
       expect { subject.synchronize }.to raise_error(Capybara::Lockstep::Timeout, /could not synchronize within [\d\.]+ seconds?/i)
       expect(subject).not_to be_synchronized

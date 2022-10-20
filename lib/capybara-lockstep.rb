@@ -1,5 +1,4 @@
 require 'capybara'
-require 'selenium-webdriver'
 require 'capybara/cuprite'
 require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/module/delegation'

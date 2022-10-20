@@ -78,8 +78,8 @@ You can also configure capybara-lockstep to [wait for other async work](#signali
 Check if your application satisfies all requirements for capybara-lockstep:
 
 - Capybara 2 or higher.
-- Your Capybara driver must use at least [selenium-webdriver](https://rubygems.org/gems/selenium-webdriver/) or [cuprite](https://rubygems.org/gems/cuprite/). capybara-lockstep deactivates itself for any other driver.
-- This gem was only tested with a Selenium/Cuprite-controlled Chrome browser. [Chrome in headless mode](https://makandracards.com/makandra/492109-running-capybara-tests-in-headless-chrome) is recommended, but not required.
+- Your Capybara driver must use [cuprite](https://rubygems.org/gems/cuprite/). capybara-lockstep deactivates itself for any other driver.
+- This gem was only tested with a Cuprite-controlled Chrome browser. [Chrome in headless mode](https://makandracards.com/makandra/492109-running-capybara-tests-in-headless-chrome) is recommended, but not required.
 - This gem was only tested with Rails, but there's no Rails dependency.
 
 ### Installing the Ruby gem
