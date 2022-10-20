@@ -121,7 +121,7 @@ module Capybara
           end
         rescue ::Ferrum::JavaScriptError => e
           # When the URL changes while a script is running, my current cuprite
-          # raises a Ferrum::JavascriptError with the message:
+          # raises a Ferrum::JavaScriptError with the message:
           # "javascript error: document unloaded while waiting for result".
           # We will retry on the next Capybara synchronize call, by then we should see
           # the new page.

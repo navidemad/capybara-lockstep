@@ -40,7 +40,7 @@ describe Capybara::Lockstep do
 
     it 'logs but does not fail when the browser navigates to a new page while synchronizing' do
       stub_page
-      error = Ferrum::JavascriptError.new('javascript error: document unloaded while waiting for result')
+      error = Ferrum::JavaScriptError.new({ "className" => StandardError, "description" => "javascript error: document unloaded while waiting for result" })
       expect(@page).to receive(:evaluate_async_script).and_raise(error)
       expect(subject).to receive(:log).with(match /navigated away/i)
       expect { subject.synchronize }.to_not raise_error
